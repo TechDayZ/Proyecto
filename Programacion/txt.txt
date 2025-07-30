@@ -1,0 +1,1 @@
+Notas:Usamos una base de datos pequeña integrada al codigo solo para hacer pruebas, luego vamos a integrar la base de datos completa cuando nos enseñen como y la terminemos

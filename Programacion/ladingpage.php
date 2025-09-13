@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Menú Lateral con Logo</title>
+  <style>
+    body { 
+        font-family: Arial, sans-serif; 
+        margin: 0; 
+          background-color: beige; /* Cambiado a beige */
+    } 
+
+    /* Barra superior */
+    .navbar{
+      background-color: rgb(0, 162, 255); color: white; padding: 1rem;
+      display:flex; justify-content:center; align-items:center; position:relative;
+    }
+    .logo img{ width:150px; height:100px; object-fit:contain; }
+
+    /* Menú hamburguesa a la izquierda */
+    .menu-icon{
+      position:absolute; left:1rem;
+      font-size:28px; cursor:pointer;
+    }
+
+    /* Botones a la derecha */
+    .auth-buttons{
+      position:absolute; right:1rem; display:flex; align-items:center; gap:10px;
+    }
+    .auth-buttons button{
+      padding:6px 12px;
+      border:none; border-radius:5px;
+      cursor:pointer;
+      font-weight:bold;
+    }
+    .auth-buttons .register{ background:white; color:rgb(0, 162, 255); }
+    .auth-buttons .login{ background:#1e90ff; color:white; }
+    .auth-buttons button:hover{ opacity:0.85; }
+
+    /* Sidebar */
+    .sidebar{
+      position:fixed; top:0; left:-250px; width:250px; height:100%;
+      background: rgb(0, 162, 255); padding-top:60px; transition:left 0.3s ease-in-out;
+      display:flex; flex-direction:column;
+      z-index:1001;
+    }
+    .sidebar a, .sidebar p{
+      padding:15px; text-decoration:none; color:white; display:block;
+      border-bottom:1px solid #555;
+      transition: background 0.25s ease, padding-left 0.25s ease;
+      cursor:pointer;
+      margin:0;
+    }
+    .sidebar a:hover{ background:#1e90ff; padding-left:25px; }
+    .sidebar.active{ left:0; }
+
+    /* Overlay */
+    .overlay{
+      position:fixed; top:0; left:0; width:100%; height:100%;
+      background:rgba(0,0,0,0.5); display:none;
+      z-index:1000;
+    }
+    .overlay.active{ display:block; }
+
+    /* Estilo para modales */
+    .modal{
+      display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+      background:rgba(0,0,0,0.5); z-index:2000; justify-content:center; align-items:center;
+    }
+    .modal-content{
+      background:white; padding:20px; border-radius:10px; width:300px;
+      box-shadow:0 5px 15px rgba(0,0,0,0.3); text-align:center; position:relative;
+    }
+    .modal-content h2{ margin-top:0; }
+    .close{
+      position:absolute; top:10px; right:15px; font-size:18px; cursor:pointer; font-weight:bold;
+    }
+    .modal input{
+      width:90%; padding:8px; margin:10px 0; border:1px solid #ccc; border-radius:5px;
+    }
+    .modal button{
+      background:rgb(0,162,255); color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer;
+    }
+    .modal button:hover{ background:#1e90ff; }
+
+    .ventanita{
+    background:white;
+    border-radius:10px;
+    margin: 20px auto; 
+    padding: 20px;
+    width: 90%;       
+    max-width: 1200px; 
+    height: 75vh; /* altura reducida a 75% de la ventana */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    display: flex;
+    justify-content: center; 
+    align-items: center;     
+    flex-direction: column;  
+}
+
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <!-- Menú hamburguesa a la izquierda -->
+    <span class="menu-icon" onclick="toggleMenu()">&#9776;</span>
+
+    <!-- Logo centrado -->
+    <div class="logo"><img src="image.png" alt="Logo"></div>
+
+    <!-- Botones a la derecha -->
+    <div class="auth-buttons">
+      <button class="register" onclick="openModal('registerModal')">Registro</button>
+      <button class="login" onclick="openModal('loginModal')">Iniciar Sesión</button>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <a href="#">Whatsapp</a>
+    <a href="#">Gmail</a>
+    <p>Tel: 097 393 688</p>
+  </div>
+
+  <!-- Fondo oscuro sidebar -->
+  <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+  <!-- Modal Registro -->
+  <div class="modal" id="registerModal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('registerModal')">&times;</span>
+      <h2>Registro</h2>
+      <input type="text" placeholder="Nombre completo">
+      <input type="text" placeholder="Cédula">
+      <input type="email" placeholder="Correo electrónico">
+      <input type="text" placeholder="Teléfono">
+      <button>Registrarse</button>
+    </div>
+  </div>
+
+  <!-- Modal Login -->
+  <div class="modal" id="loginModal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('loginModal')">&times;</span>
+      <h2>Iniciar Sesión</h2>
+      <input type="email" placeholder="Correo electrónico">
+      <input type="password" placeholder="Contraseña">
+      <button>Entrar</button>
+    </div>
+  </div>
+
+<div class="ventanita">
+
+    </div>
+
+  <script>
+    // Sidebar
+    function toggleMenu() {
+      document.getElementById("sidebar").classList.toggle("active");
+      document.getElementById("overlay").classList.toggle("active");
+    }
+
+    // Abrir modal
+    function openModal(id) {
+      document.getElementById(id).style.display = "flex";
+    }
+
+    // Cerrar modal
+    function closeModal(id) {
+      document.getElementById(id).style.display = "none";
+    }
+
+    // Cerrar modal al hacer clic fuera
+    window.onclick = function(e) {
+      if (e.target.classList.contains("modal")) {
+        e.target.style.display = "none";
+      }
+    }
+  </script>
+</body>
+</html>

@@ -84,20 +84,39 @@
     }
     .modal button:hover{ background:#1e90ff; }
 
-    .ventanita{
-    background:white;
-    border-radius:10px;
-    margin: 20px auto; 
-    padding: 20px;
-    width: 90%;       
-    max-width: 1200px; 
-    height: 75vh; /* altura reducida a 75% de la ventana */
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    display: flex;
-    justify-content: center; 
-    align-items: center;     
-    flex-direction: column;  
+   .ventanita{
+  background: white; /* Fondo beige */
+  border-radius: 10px;
+  margin: 20px auto;
+  padding: 20px;
+  width: 90%;
+  max-width: 1200px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
+
+.contenido-secundario{
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.texto{
+  flex: 2;
+  text-align: left; /* texto alineado a la izquierda */
+}
+
+.texto p{
+  margin-bottom: 20px;
+}
+
+.imagen-coop{
+  flex: 1;
+  max-width: 40%;
+  height: auto;
+  border-radius: 8px;
+}
+
 
   </style>
 </head>
@@ -150,9 +169,36 @@
     </div>
   </div>
 
-<div class="ventanita">
+    <div class="ventanita">
+  <!-- Contenedor principal -->
+  <div class="contenido-secundario">
+    
+    <!-- Texto (párrafo + lista) -->
+    <div class="texto">
+      <p>
+        Las cooperativas son asociaciones de personas que se unen de forma voluntaria y democrática
+        para satisfacer necesidades comunes y alcanzar objetivos compartidos.<br><br>
+        En lugar de priorizar el beneficio individual, las cooperativas se basan en los valores de la solidaridad,
+        la ayuda mutua, la equidad y la transparencia.<br><br>
+        En una cooperativa de vivienda por ayuda mutua, cada socio aporta no solo recursos económicos,
+        sino también su tiempo y esfuerzo en jornadas de trabajo colectivo. Esto fortalece el sentido de comunidad,
+        fomenta la igualdad y permite acceder a una vivienda digna de manera justa y compartida.<br><br>
+        Nuestro sistema de gestión acompaña este espíritu cooperativo, brindando a cada socio las herramientas necesarias para:
+      </p>
 
+      <ul>
+        <li>Participar activamente en la vida de la cooperativa.</li>
+        <li>Acceder de manera transparente a la información de aportes, horas de trabajo y decisiones.</li>
+        <li>Reforzar la confianza y la unión entre los miembros de la comunidad.</li>
+      </ul>
     </div>
+
+    <!-- Imagen -->
+    <img src="coop.png" alt="Cooperativa" class="imagen-coop">
+  </div>
+</div>
+
+
 
   <script>
     // Sidebar

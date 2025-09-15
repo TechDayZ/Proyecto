@@ -126,7 +126,7 @@
     <span class="menu-icon" onclick="toggleMenu()">&#9776;</span>
 
     <!-- Logo centrado -->
-    <div class="logo"><img src="image.png" alt="Logo"></div>
+    <div class="logo"><img src="logo.png" alt="Logo"></div>
 
     <!-- Botones a la derecha -->
     <div class="auth-buttons">

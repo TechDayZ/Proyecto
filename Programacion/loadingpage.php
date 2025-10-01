@@ -150,11 +150,14 @@
     <div class="modal-content">
       <span class="close" onclick="closeModal('registerModal')">&times;</span>
       <h2>Registro</h2>
-      <input type="text" placeholder="Nombre completo">
-      <input type="text" placeholder="Cédula">
-      <input type="email" placeholder="Correo electrónico">
-      <input type="text" placeholder="Teléfono">
-      <button>Registrarse</button>
+      <form action="register.php" method="post">
+        <label>Nombre completo<br><input name="nombre" required></label>
+        <label>Cédula<br><input name="idUser" required></label>
+        <label>Telefono<br><input name="telefono" required></label>
+        <label>Gmail<br><input name="email" required></label>
+        <label>Fecha de nacimiento<br><input name="fechNac" type="date" required></label>
+        <label>Contraseña<br><input name="password" type="password" required></label>
+        <button type="submit">Registrarse</button></form>
     </div>
   </div>
 
@@ -163,9 +166,11 @@
     <div class="modal-content">
       <span class="close" onclick="closeModal('loginModal')">&times;</span>
       <h2>Iniciar Sesión</h2>
-      <input type="email" placeholder="Correo electrónico">
-      <input type="password" placeholder="Contraseña">
-      <button>Entrar</button>
+      <form action="login.php" method="post">
+      <input name="idUser" placeholder="Cedula" required>
+      <input name="password" placeholder="Contraseña" required>
+      <button type="submit">Entrar</button>
+      </form>
     </div>
   </div>
 

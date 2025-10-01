@@ -1,3 +1,20 @@
+<?php
+session_start();
+require 'db.php';
+
+if (!isset($_SESSION['user_id'])) {
+    die('Acceso denegado');
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $date = $_POST['work_date'] ?? '';
+    $hours = $_POST['horas'] ?? 0;
+    $description = $_POST['descripcion'] ?? '';
+    $stmt = $pdo->prepare('INSERT INTO horastrabajo (user_id, work_date, horas, descripcion) VALUES (?,?,?,?)');
+    $stmt->execute([$_SESSION['user_id'], $date, $hours, $description]);
+}
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -55,7 +72,7 @@
     .overlay.active{ display:block; }
   </style>
 </head>
-<body>
+<body> 
   <div class="navbar">
     <!-- Menú hamburguesa a la izquierda -->
     <span class="menu-icon" onclick="toggleMenu()">&#9776;</span>
@@ -70,7 +87,26 @@
   <!-- Sidebar -->
   <div class="sidebar" id="sidebar">
     <a href="#">comprobantes</a>
-    <a href="#">jornadas</a>
+   <button type="button" onclick="document.getElementById('jornadaModal').style.display='block'">
+  Jornadas
+</button>
+
+<div id="jornadaModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; 
+background:rgba(0,0,0,0.6);">
+  <div style="background:#fff; margin:5% auto; padding:20px; width:400px; border-radius:10px;">
+    <h1><?php echo htmlspecialchars($_SESSION['nombre']); ?></h1>
+    <form method="post">
+      <label>Fecha<br><input type="date" name="work_date" required></label><br>
+      <label>Horas trabajadas<br><input type="number" name="horas" step="0.1" required></label><br>
+      <label>Descripción<br><textarea name="descripcion"></textarea></label><br>
+      <button type="submit">Registrar</button>
+      <button type="button" onclick="document.getElementById('jornadaModal').style.display='none'">
+        Cerrar
+      </button>
+    </form>
+  </div>
+</div>
+
     <a href="#">actas</a>
   </div>
 

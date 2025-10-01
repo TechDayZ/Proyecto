@@ -1,29 +1,29 @@
 <?php
 session_start();
-include 'db.php';
-//Aca voy a utilizar sesiones y una pequeña base de datos solo por ahora, luego cuando implementemos la base de datos completa usaremos esa junto a las apis//
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $correo = $_POST["correo"];
-    $password = $_POST["password"];
+require 'db.php';
 
-    $sql = "SELECT * FROM usuarios WHERE correo=?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $correo);
-    $stmt->execute();
-    $result = $stmt->get_result();
+$document_number = trim($_POST['idUser'] ?? '');
+$password = $_POST['password'] ?? '';
 
-    if ($usuario = $result->fetch_assoc()) {
-        if (password_verify($password, $usuario['password'])) {
-            $_SESSION['usuario_id'] = $usuario['id'];
-            $_SESSION['usuario_nombre'] = $usuario['nombre'];
-            $_SESSION['usuario_correo'] = $usuario['correo'];
-            header("Location: panel.php");
-            exit();
-        } else {
-            echo "Contraseña incorrecta.";
-        }
-    } else {
-        echo "Usuario no encontrado.";
-    }
+if (!$document_number || !$password) { die('Faltan datos'); }
+
+$stmt = $pdo->prepare('SELECT * FROM usuarios WHERE idUser = ?');
+$stmt->execute([$document_number]);
+$usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$usuario || !password_verify($password, $usuario['password_hash'])) {
+    die('Cédula o contraseña inválida');
 }
+
+if ($usuario['status'] !== 'active') {
+    die('Tu cuenta no está habilitada. Estado: ' . htmlspecialchars($usuario['status']));
+}
+
+// Login exitoso
+// Usar la misma clave de sesión que chequee frontend.php (recomiendo 'user_id' y 'nombre')
+$_SESSION['user_id'] = $usuario['idUser'];
+$_SESSION['nombre'] = $usuario['nombre'];
+
+header('Location: frontend.php');
+exit;
 ?>

@@ -5,6 +5,6 @@ CREATE TABLE horastrabajo (
   horas DECIMAL(5,2) NOT NULL,
   descripcion TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT unique_user_date UNIQUE (user_id, work_date);
+  CONSTRAINT unique_user_date UNIQUE (user_id, work_date),
   FOREIGN KEY (user_id) REFERENCES usuarios(idUser)
 ) ;

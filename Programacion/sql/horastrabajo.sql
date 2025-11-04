@@ -1,7 +1,5 @@
-
-
 CREATE TABLE horastrabajo (
-  idHoras INT(9) PRIMARY KEY,
+  idHoras INT(9) PRIMARY KEY auto_increment,
   user_id INT NOT NULL,
   work_date DATE NOT NULL,
   horas DECIMAL(5,2) NOT NULL,

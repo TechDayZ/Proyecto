@@ -1,6 +1,7 @@
 <?php
 session_start();
+session_unset();
 session_destroy();
-header("Location: index.html");
-exit();
+header("Location: loadingpage.php");
+exit;
 ?>

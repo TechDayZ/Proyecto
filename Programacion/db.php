@@ -1,5 +1,5 @@
 <?php
-$host = '192.168.1.50'; // IP del servidor MySQL
+$host = '192.168.1.102'; // IP del servidor MySQL
 $db   = 'cooperativas';
 $user = 'ldiaz';
 $pass = '1234';
@@ -12,4 +12,5 @@ try {
     die("Error de conexión: " . $e->getMessage());
 }
 ?>
+
 

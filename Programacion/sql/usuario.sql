@@ -43,11 +43,6 @@ CREATE TABLE `usuarios` (
 --
 -- Despejando dados para a tabela `usuarios`
 --
-
-INSERT INTO `usuarios` (`idUser`, `nombre`, `fechNac`, `email`, `password`, `telefono`, `password_hash`, `status`,'admin', `created_at`, `foto_perfil`) VALUES
-(56494869, 'Lucas Matias Diaz Gomensoro', '0000-00-00', 'socialluhipaing@gmail.com', '', 97393688, '$2y$10$ukbRvfuMGzWERj5tCdlAX.WuySgXM4CXqghiHsMEYniRqKCvoDdAi', 'active','admin' ,'2025-11-04 21:05:27', 'perfil_56494869_1762304849.jpeg');
-
---
 -- Índices para tabelas despejadas
 --
 
@@ -61,3 +56,4 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+

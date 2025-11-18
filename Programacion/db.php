@@ -1,8 +1,8 @@
 <?php
 $host = '192.168.1.50'; // IP del servidor MySQL
 $db   = 'cooperativas';
-$user = 'phpuser';
-$pass = 'tu_clave_segura';
+$user = 'ldiaz';
+$pass = '1234';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8mb4", $user, $pass);
@@ -12,3 +12,4 @@ try {
     die("Error de conexión: " . $e->getMessage());
 }
 ?>
+

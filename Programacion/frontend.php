@@ -222,7 +222,6 @@ if (empty($foto)) {
   cursor: pointer;
 }
 
-/* Mensaje de éxito/errores dentro del modal */
 .jornada-msg {
   margin-top: 10px;
   padding: 10px;
@@ -295,7 +294,7 @@ if (empty($foto)) {
       border-bottom: 1px solid #ddd;
       text-align: left;
     }
-    /* ==== SECCIÓN COMPROBANTES ==== */
+  
 #seccionComprobantes {
   background: #fff;
   padding: 30px;
@@ -390,20 +389,20 @@ if (empty($foto)) {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
-/* ==== Diseño para el modal de jornadas ==== */
+
 #jornadaModal {
-  display: none; /* sigue oculto hasta que lo actives con style.display='block' */
+  display: none; 
   position: fixed;
   top: 0; left: 0;
   width: 100%; height: 100%;
-  background: rgba(0,0,0,0.6);  /* fondo oscuro translúcido */
+  background: rgba(0,0,0,0.6); 
   z-index: 2000;
   justify-content: center;
   align-items: center;
   text-align: center;
 }
 
-/* centrado flexible incluso cuando uses display='block' */
+
 #jornadaModal .modal-content {
   position: relative;
   background: #fff;
@@ -479,7 +478,7 @@ if (empty($foto)) {
 #jornadaModal button[type="button"]:hover {
   background: #e4e4e4;
 }
-/* ==== MODAL UNIDAD HABITACIONAL ==== */
+
 #modalUnidad {
   display: none;
   position: fixed;
@@ -567,6 +566,85 @@ if (empty($foto)) {
   color: #333;
 }
 
+
+
+
+.avisos-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.aviso-card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 14px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.aviso-card h3 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.meta {
+    color: gray;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+}
+
+.aviso-contenido {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+}
+
+.comentario-card {
+    background: #f1f1f1;
+    padding: 10px 12px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.form-comentario textarea {
+    width: 100%;
+    height: 70px;
+    resize: none;
+    padding: 8px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.form-comentario button {
+    background: #0056b3;
+    color: white;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+}
+
+.form-comentario button:hover {
+    background: #003d80;
+}
+.comentarios-container {
+    display: none;
+    margin-top: 10px;
+}
+
+.toggle-btn {
+    background: #555;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 8px;
+}
+.toggle-btn:hover {
+    background: #333;
+}
+
+
   </style>
 
   
@@ -618,6 +696,23 @@ document.addEventListener("DOMContentLoaded", () => {
 function cerrarUnidadModal() {
   document.getElementById("modalUnidad").style.display = "none";
 }
+function toggleComentarios(id) {
+    const cont = document.getElementById("comentarios-" + id);
+    const btn = document.getElementById("btn-" + id);
+
+    if (!cont) {
+        console.error("No existe el contenedor comentarios-" + id);
+        return;
+    }
+
+    if (cont.style.display === "none" || cont.style.display === "") {
+        cont.style.display = "block";
+        btn.textContent = "Ocultar comentarios";
+    } else {
+        cont.style.display = "none";
+        btn.textContent = "Ver comentarios";
+    }
+}
 </script>
 
 
@@ -637,12 +732,98 @@ function cerrarUnidadModal() {
     </a>
   </div>
 
+
+<h2 style="margin-bottom: 20px;"> Avisos de la Cooperativa</h2>
+
+<div class="avisos-feed">
+
+<?php
+// Traer todos los avisos
+$stmt = $pdo->query("
+    SELECT a.idAviso, a.titulo, a.contenido, a.fecha, u.nombre
+    FROM avisos a
+    JOIN usuarios u ON u.idUser = a.idUser
+    ORDER BY a.fecha DESC
+");
+
+$avisos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+foreach ($avisos as $a):
+?>
+
+<div class="aviso-card">
+
+    <h3><?= htmlspecialchars($a['titulo']) ?></h3>
+    <p class="meta">
+        Publicado por <?= htmlspecialchars($a['nombre']) ?> — <?= htmlspecialchars($a['fecha']) ?>
+    </p>
+
+    <p class="aviso-contenido"><?= nl2br(htmlspecialchars($a['contenido'])) ?></p>
+
+    <hr>
+
+    <button id="btn-<?= $a['idAviso'] ?>" class="toggle-btn" onclick="toggleComentarios(<?= $a['idAviso'] ?>)">
+    Ver comentarios
+</button>
+
+<div id="comentarios-<?= $a['idAviso'] ?>" class="comentarios-container">
+    <h4> Comentarios</h4>
+
+
+
+
+<?php
+$stmt2 = $pdo->prepare("
+    SELECT c.comentario, c.fecha_comentario, u.nombre
+    FROM comentarios c
+    JOIN usuarios u ON u.idUser = c.idUser
+    WHERE c.idAviso = ?
+    ORDER BY c.fecha_comentario ASC
+");
+$stmt2->execute([$a['idAviso']]);
+$comentarios = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+
+if ($comentarios):
+    foreach ($comentarios as $c):
+?>
+    <div class="comentario-card">
+        <p><strong><?= htmlspecialchars($c['nombre']) ?></strong></p>
+        <p><?= nl2br(htmlspecialchars($c['comentario'])) ?></p>
+        <small><?= htmlspecialchars($c['fecha_comentario']) ?></small>
+    </div>
+<?php
+    endforeach;
+else:
+?>
+    <p style="color:gray;">No hay comentarios todavía</p>
+<?php endif; ?>
+
+<form class="form-comentario" action="guardarComentario.php" method="POST">
+    <input type="hidden" name="idAviso" value="<?= $a['idAviso'] ?>">
+    <textarea name="comentario" required></textarea>
+    <button type="submit">Comentar</button>
+</form>
+
+</div>
+
+
+<?php endforeach; ?>
+
+</div>
+
+</div>
   <div class="sidebar" id="sidebar">
     <button id="btnComprobantes" type="button" class="jornadasb">Comprobantes</button>
     <button class="jornadasb" type="button" onclick="document.getElementById('jornadaModal').style.display='block'">
       Jornadas
     </button>
     <button id="btnUnidadHabitacional" type="button" class="jornadasb">Unidad Habitacional</button>
+   <?php if (!empty($_SESSION['rol']) && $_SESSION['rol'] === 'admin'): ?>
+  
+    <a href="backoffice.php" id="adminBtn" class="admin-btn">Admin</a>
+  
+<?php endif; ?>
+
   </div>
 
   <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
@@ -675,7 +856,7 @@ function cerrarUnidadModal() {
   <!-- Sección Comprobantes -->
   <!-- Sección Comprobantes -->
 <div id="seccionComprobantes" style="display:none; margin-top:20px;">
-  <h2>📄 Subir comprobante de pago</h2>
+  <h2> Subir comprobante de pago</h2>
 
   <form action="procesar_comprobante.php" method="POST" enctype="multipart/form-data">
     <label>Tipo de comprobante:</label>
@@ -693,7 +874,7 @@ function cerrarUnidadModal() {
 
   <hr>
 
-  <h3>🧾 Mis comprobantes</h3>
+  <h3> Mis comprobantes</h3>
   <?php
   try {
       $id_usuario = $_SESSION['user_id']; // usamos la sesión actual

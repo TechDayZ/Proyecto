@@ -1,3 +1,14 @@
+<?php
+session_start();
+require 'db.php';
+
+// Verificar si el usuario tiene rol admin
+if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'admin') {
+   header("Location: loadingpage.php");
+   exit;
+}
+?>
+
 <!doctype html>
 <html>
 <head>
@@ -95,6 +106,59 @@ $horas = $pdo->query("
   <title>Backoffice</title>
 </head>
 <body>
+  <form action="frontend.php" method="GET" style="margin-bottom:15px;">
+    <button type="submit" 
+            style="
+                background:#555;
+                color:white;
+                border:none;
+                padding:10px 16px;
+                border-radius:6px;
+                cursor:pointer;
+                font-size:16px;
+                display:flex;
+                align-items:center;
+                gap:6px;
+            ">
+        <i class="fas fa-arrow-left"></i> Volver a la página principal
+    </button>
+</form>
+
+  <h2 style="cursor:pointer;" onclick="toggleUsuarios()"> Lista de Usuarios (click para abrir/cerrar)</h2>
+
+<div id="listaUsuarios" style="display:none; margin-bottom:20px;">
+    <table class="reporte-table">
+        <tr>
+            <th>Cédula</th>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Rol</th>
+            <th>Estado</th>
+        </tr>
+
+        <?php
+        $usuariosTodos = $pdo->query("SELECT idUser, nombre, email, rol, status FROM usuarios ORDER BY nombre")->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($usuariosTodos as $u):
+        ?>
+        <tr>
+            <td><?= htmlspecialchars($u['idUser']) ?></td>
+            <td><?= htmlspecialchars($u['nombre']) ?></td>
+            <td><?= htmlspecialchars($u['email']) ?></td>
+            <td><?= htmlspecialchars($u['rol']) ?></td>
+            <td><?= htmlspecialchars($u['status']) ?></td>
+        </tr>
+        <?php endforeach; ?>
+    </table>
+</div>
+
+<script>
+function toggleUsuarios() {
+    const box = document.getElementById("listaUsuarios");
+    box.style.display = (box.style.display === "none") ? "block" : "none";
+}
+</script>
+
   <h1>Usuarios pendientes</h1>
   <table border="1">
     <tr><th>Cédula</th><th>Nombre</th><th>Acciones</th></tr>
@@ -208,7 +272,7 @@ try {
     echo "<p>Error al obtener los comprobantes: " . htmlspecialchars($e->getMessage()) . "</p>";
 }
 ?>
-  <h2>🏘️ Unidades Habitacionales</h2>
+  <h2> Unidades Habitacionales</h2>
 
   <?php
   try {
@@ -261,7 +325,41 @@ try {
     </tr>
     <?php endforeach; ?>
   </table>
-  <h2>📊 Reportes de Avance de Unidades</h2>
+  <h2> Crear Nueva Unidad Habitacional</h2>
+
+<div class="reporte-container">
+  <form action="backend_crear_unidad.php" method="POST">
+    
+    <label>Número de Unidad:</label>
+    <input type="text" name="numero_unidad" required>
+
+    <label>Dirección:</label>
+    <input type="text" name="direccion" required>
+
+    <label>Descripción:</label>
+    <textarea name="descripcion" rows="3"></textarea>
+
+    <label>Cuartos:</label>
+    <input type="number" name="cuartos" min="0" required>
+
+    <label>Baños:</label>
+    <input type="number" name="banos" min="0" required>
+
+    <label>Metros cuadrados:</label>
+    <input type="number" name="metros" min="1" required>
+
+    <label>Estado:</label>
+    <select name="estado" required>
+        <option value="disponible">Disponible</option>
+        <option value="ocupada">Ocupada</option>
+        <option value="asignada">Asignada</option>
+    </select>
+
+    <button type="submit">Crear Unidad</button>
+  </form>
+</div>
+
+  <h2>Reportes de Avance de Unidades</h2>
 <?php
 try {
     $reportes = $pdo->query("
@@ -426,6 +524,16 @@ try {
     <?php endif; ?>
   </table>
 </div>
+<h2> Publicar nuevo aviso</h2>
+
+<form action="crear_aviso.php" method="POST">
+    <input type="text" name="titulo" placeholder="Título del aviso" required style="width:100%; padding:10px;">
+    <textarea name="contenido" placeholder="Contenido del aviso" required style="width:100%; padding:10px; height:120px; margin-top:10px;"></textarea>
+
+    <button type="submit" style="margin-top:10px; padding:12px; background:#0056b3; color:white; border:none; border-radius:6px;">
+        Publicar
+    </button>
+</form>
 
 
 

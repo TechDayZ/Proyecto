@@ -9,8 +9,9 @@ require 'db.php';
 $full_name = trim($_POST['nombre'] ?? '');
 $idUser = trim($_POST['idUser'] ?? '');
 $password = $_POST['password'] ?? '';
-
-if (!$full_name || !$idUser || !$password) {
+$fechNac = trim($_POST['fechNac'] ?? '');
+$numero = trim($_POST['telefono'] ?? '');
+if (!$full_name || !$idUser || !$password || !$fechNac|| !$numero) {
     die('Faltan campos obligatorios.');
 }
 
@@ -21,11 +22,10 @@ if (!ctype_digit($idUser)) {
 
 $hash = password_hash($password, PASSWORD_DEFAULT);
 
-// Forma correcta: si quieres insertar el status manualmente, usa la cadena literal 'pending' (no como placeholder).
-// Aquí uso 3 placeholders (nombre, idUser, password_hash) y status 'pending' literal.
-$stmt = $pdo->prepare('INSERT INTO usuarios (nombre, idUser, password_hash, status) VALUES (?,?,?, \'pending\')');
+
+$stmt = $pdo->prepare('INSERT INTO usuarios (nombre, idUser, password_hash, status, fechNac, telefono) VALUES (?,?,?, \'pending\',?,?)');
 try {
-    $stmt->execute([$full_name, (int)$idUser, $hash]);
+    $stmt->execute([$full_name, (int)$idUser, $hash, $fechNac, $numero]);
     $_SESSION['message'] = 'Registro enviado. Espera habilitación en backoffice.';
 } catch (Exception $e) {
     // mensaje de error amigable + log si quieres

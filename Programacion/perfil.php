@@ -7,30 +7,43 @@ if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit;
 }
-$idUsuarioLogueado = $_SESSION['user_id'];
 
 try {
-    $stmt = $pdo->prepare("SELECT nombre, email, telefono, foto_perfil, fechNac FROM usuarios WHERE idUser = ?");
-$stmt->execute([$_SESSION['user_id']]);
-$usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+    // consulta clara y sin comas sobrantes
+    $stmt = $pdo->prepare(
+        "SELECT nombre, email, telefono, foto_perfil, fechNac, rol
+         FROM usuarios
+         WHERE idUser = ?"
+    );
+    $stmt->execute([$_SESSION['user_id']]);
+    $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if ($usuario) {
-    $nombre = $usuario['nombre'];
-    $email = $usuario['email'];
-    $telefono = $usuario['telefono'];
-    $foto_perfil = $usuario['foto_perfil'] ?: 'default.jpg';
-    $fechNac = $usuario['fechNac'] ?? ''; 
-} else {
-    $nombre = "Desconocido";
-    $email = "No disponible";
-    $telefono = "No disponible";
-    $foto_perfil = "default.jpg";
-}
+    if ($usuario) {
+        $nombre      = $usuario['nombre'] ?? 'Desconocido';
+        $email       = $usuario['email'] ?? 'No disponible';
+        $telefono    = $usuario['telefono'] ?? 'No disponible';
+        $foto_perfil = $usuario['foto_perfil'] ?: 'default.jpg';
+        $fechNac     = $usuario['fechNac'] ?? '';
+        $esAdmin     = (isset($usuario['rol']) && $usuario['rol'] === 'admin');
+          $rolRaw = isset($usuario['rol']) ? $usuario['rol'] : '';
+        $rolNorm = strtolower(trim((string)$rolRaw));
+         $_SESSION['rol'] = $rolNorm;
+    } else {
+        // usuario no encontrado (caso raro)
+        $nombre = "Desconocido";
+        $email = $telefono = "No disponible";
+        $foto_perfil = "default.jpg";
+        $fechNac = "";
+        $esAdmin = false;
+    }
 
 } catch (PDOException $e) {
+    // Mensaje claro para debug (puedes eliminarlo en producción)
     die("Error al obtener los datos del usuario: " . $e->getMessage());
 }
+
 ?>
+
 
 <!DOCTYPE html>
 <html lang="es">
@@ -261,6 +274,33 @@ if ($usuario) {
     background-color: #c0392b;
     transform: scale(1.05);
 }
+.admin-form {
+    position: fixed;
+    top: 70px;     /* Debajo del botón de cerrar sesión */
+    right: 25px;
+    z-index: 1000;
+}
+
+.admin-btn {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.admin-btn:hover {
+    background-color: #2c81ba;
+    transform: scale(1.05);
+}
 
     </style>
 </head>
@@ -279,7 +319,16 @@ if ($usuario) {
     <button type="submit" class="logout-btn">
         <i class="fas fa-sign-out-alt"></i> Cerrar sesión
     </button>
-</form>
+    </form>
+   <?php if ($esAdmin==true): ?>
+  <form action="backoffice.php" method="GET" style="margin-top:8px;">
+    <button type="submit" class="logout-btn" style="background:#0056b3;">
+      <i class="fas fa-user-shield"></i> Entrar a menú de admin
+    </button>
+  </form>
+<?php endif; ?>
+
+
 
 
         

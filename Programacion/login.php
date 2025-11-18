@@ -19,10 +19,11 @@ if ($usuario['status'] !== 'active') {
     die('Tu cuenta no está habilitada. Estado: ' . htmlspecialchars($usuario['status']));
 }
 
-// Login exitoso
-// Usar la misma clave de sesión que chequee frontend.php (recomiendo 'user_id' y 'nombre')
+
 $_SESSION['user_id'] = $usuario['idUser'];
 $_SESSION['nombre'] = $usuario['nombre'];
+$_SESSION['rol'] = $usuario['rol'];
+
 
 header('Location: frontend.php');
 exit;

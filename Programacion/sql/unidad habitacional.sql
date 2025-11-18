@@ -1,6 +1,0 @@
-create table uniHab (
-IdUniHab int(5) not null,
-bloque int(5) not null,
-constraint PK_IDUNIHAB primary key (idunihab)
-);
-select*from uniHab;

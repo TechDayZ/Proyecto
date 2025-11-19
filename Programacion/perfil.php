@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 require 'db.php';
@@ -9,7 +8,6 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 try {
-    // consulta clara y sin comas sobrantes
     $stmt = $pdo->prepare(
         "SELECT nombre, email, telefono, foto_perfil, fechNac, rol
          FROM usuarios
@@ -24,12 +22,10 @@ try {
         $telefono    = $usuario['telefono'] ?? 'No disponible';
         $foto_perfil = $usuario['foto_perfil'] ?: 'default.jpg';
         $fechNac     = $usuario['fechNac'] ?? '';
-        $esAdmin     = (isset($usuario['rol']) && $usuario['rol'] === 'admin');
-          $rolRaw = isset($usuario['rol']) ? $usuario['rol'] : '';
-        $rolNorm = strtolower(trim((string)$rolRaw));
-         $_SESSION['rol'] = $rolNorm;
+        $rolNorm     = strtolower(trim((string)$usuario['rol']));
+        $_SESSION['rol'] = $rolNorm;
+        $esAdmin     = ($rolNorm === 'admin');
     } else {
-        // usuario no encontrado (caso raro)
         $nombre = "Desconocido";
         $email = $telefono = "No disponible";
         $foto_perfil = "default.jpg";
@@ -38,10 +34,8 @@ try {
     }
 
 } catch (PDOException $e) {
-    // Mensaje claro para debug (puedes eliminarlo en producción)
     die("Error al obtener los datos del usuario: " . $e->getMessage());
 }
-
 ?>
 
 

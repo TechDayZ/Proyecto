@@ -11,7 +11,8 @@ $idUser = trim($_POST['idUser'] ?? '');
 $password = $_POST['password'] ?? '';
 $fechNac = trim($_POST['fechNac'] ?? '');
 $numero = trim($_POST['telefono'] ?? '');
-if (!$full_name || !$idUser || !$password || !$fechNac|| !$numero) {
+$email = trim($_POST['email'] ?? '');
+if (!$full_name || !$idUser || !$password || !$fechNac|| !$numero||!$email ) {
     die('Faltan campos obligatorios.');
 }
 
@@ -23,9 +24,9 @@ if (!ctype_digit($idUser)) {
 $hash = password_hash($password, PASSWORD_DEFAULT);
 
 
-$stmt = $pdo->prepare('INSERT INTO usuarios (nombre, idUser, password_hash, status, fechNac, telefono) VALUES (?,?,?, \'pending\',?,?)');
+$stmt = $pdo->prepare('INSERT INTO usuarios (nombre, idUser, password_hash, status, fechNac, telefono, email) VALUES (?,?,?, \'pending\',?,?,?)');
 try {
-    $stmt->execute([$full_name, (int)$idUser, $hash, $fechNac, $numero]);
+    $stmt->execute([$full_name, (int)$idUser, $hash, $fechNac, $numero, $email]);
     $_SESSION['message'] = 'Registro enviado. Espera habilitación en backoffice.';
 } catch (Exception $e) {
     // mensaje de error amigable + log si quieres

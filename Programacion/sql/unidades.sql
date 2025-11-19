@@ -1,16 +1,18 @@
-CREATE TABLE unidades (
+create table unidades (
     idUnidad INT AUTO_INCREMENT PRIMARY KEY,
-    id_usuario INT DEFAULT NULL, -- el usuario al que se asigna
+    id_usuario INT DEFAULT NULL,
     numero_unidad VARCHAR(255) NOT NULL,
     direccion VARCHAR(255) NOT NULL,
-    descripcion TEXT default null ,
-     cuartos INT not NULL,
- banos INT not NULL,
- metros INT not NULL;
+    descripcion TEXT DEFAULT NULL,
+    cuartos INT NOT NULL,
+    banos INT NOT NULL,
+    metros INT NOT NULL,
     estado ENUM('disponible', 'asignada', 'ocupada') DEFAULT 'disponible',
     fecha_asignacion TIMESTAMP NULL DEFAULT NULL,
-    FOREIGN KEY (id_usuario) REFERENCES usuarios(idUser)
+    constraint FK_UNIDADES_USUARIO foreign key (id_usuario)
+        references usuarios(idUser)
 );
+
 
 
 INSERT INTO unidades (numero_unidad, direccion, descripcion, cuartos, banos, metros, estado)
